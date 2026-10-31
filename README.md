@@ -1,51 +1,57 @@
+<div align="center">
+
 # dotfiles
 
-My shell configuration. Nothing exotic, but it is the same on every machine I
-work on, which is the entire point.
+**Shell configuration that is the same on every machine I work on — which is the entire point.**
 
-## What is in here
+[![shell](https://img.shields.io/badge/shell-bash%20%7C%20zsh-black?style=flat-square&logo=gnubash)](#quick-start)
+[![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-| File | Links to | What it does |
-|------|----------|--------------|
-| `zshrc` | `~/.zshrc` | history, completion, two-line prompt with git branch |
-| `bashrc` | `~/.bashrc` | the same idea for servers without zsh |
-| `aliases.sh` | `~/.shell_aliases` | shared aliases and a few helper functions |
-| `setup.sh` | - | symlinks the three files into `$HOME` |
+</div>
 
-## Install
+## About
 
-```sh
+Nothing exotic, but it is identical on every machine, and `setup.sh` is
+written to be run twice without damage: it never deletes anything, moves an
+existing file to `<name>.backup.<timestamp>` first, and reports what is already
+linked and stops there.
+
+A handful of helpers carry most of the value: `peek export.csv` (first 20 rows
+of any csv/parquet/json via duckdb), `rows big.parquet` (row count without
+opening pandas), and dbt aliases that are always scoped to a selector rather
+than bare.
+
+## Quick start
+
+```bash
 git clone https://github.com/liesbethbelmokhtar203-source/dotfiles ~/.dotfiles
 cd ~/.dotfiles
 ./setup.sh --dry-run   # see what it would do
 ./setup.sh
 ```
 
-`setup.sh` never deletes anything. If `~/.bashrc` already exists it is moved to
-`~/.bashrc.backup.20240301120000` first. Running it twice is safe, it reports
-what is already linked and stops there.
+## Configuration
 
-## Usage
+| Key | Description |
+| --- | --- |
+| `zshrc → ~/.zshrc` | history, completion, two-line prompt with git branch |
+| `bashrc → ~/.bashrc` | the same idea for servers without zsh |
+| `aliases.sh → ~/.shell_aliases` | shared aliases and a few helper functions |
+| `setup.sh` | symlinks the three files into `$HOME`, `--dry-run` supported |
+| `~/.zshrc.local / ~/.bashrc.local` | sourced at the end if present, never tracked here |
+## Roadmap
 
-Everything is loaded on the next shell. A few of the helpers:
+- [ ] Zsh completion for the helper functions
+- [ ] Per-host overrides documented end to end
+- [ ] Shellcheck in CI
 
-```sh
-peek export.csv        # first 20 rows of any csv/parquet/json, via duckdb
-peek export.csv 100    # ... or 100
-rows big.parquet       # row count without opening it in pandas
-dbtb stg_orders+       # dbt build --select stg_orders+
-gs                     # git status --short --branch
-```
+## Contributing
 
-`peek` and `rows` need [duckdb](https://duckdb.org) on the PATH. Everything else
-is plain shell.
-
-## Local overrides
-
-`~/.zshrc.local` and `~/.bashrc.local` are sourced at the end if they exist and
-are not tracked here. Client-specific paths, credentials, and per-machine
-settings go there, not in this repo.
+Issues and pull requests are welcome. Please keep changes small and focused,
+and add a test for any behaviour change — every repository here ships with a
+runnable test suite and no third-party dependencies, so CI is just
+`python3 -m unittest` / `bash test_*.sh`.
 
 ## License
 
-MIT.
+[MIT](LICENSE)
